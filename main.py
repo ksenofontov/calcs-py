@@ -1,25 +1,50 @@
 from datetime import datetime
 
+def make_date(date):
+  if type(date) == str:
+    return datetime.strptime(date, '%d.%m.%y')
+  elif type(date) == datetime:
+    return date
 
 class Record:
   def __init__(self, amount, comment, date):
-    record = {
-      "amount": amount,
-      "comment": comment,
-      "date": datetime.strptime(date, '%b %d %Y %I:%M%p')
-    }
+      self.amount = amount
+      self.comment = comment
+      self.date = make_date(date)
 
 
 class Calculator:
-  self.records = []
-  def __init__(self, limit):
+  def __init__(self, limit=0):
+    self.records = []
+    self.today = datetime.now()
     self.limit = limit
 
-  def add_record(record):
-    if not type(record) is Record:
-      raise TypeError('Wrong record format')
+  def add_record(self, record):
     self.records.append(record)
 
-  def get_today_stats():
+  def get_today_stats(self):
+    count = 0
+    for record in self.records:
+      if record.date.day == self.today.day:
+        count += record.amount
+    print(count)
+
+  def get_week_stats(self):
+    count = 0
+    for record in self.records:
+      if self.record.date
+
+class CaloriesCalculator(Calculator):
+  def get_calories_remained(self):
 
 
+
+class CashCalculator(Calculator):
+  def get_today_cash_remained(currency):
+
+
+
+calc = Calculator()
+calc.add_record(Record(100, 'comm1', datetime.now()))
+calc.add_record(Record(200, 'comm2', datetime.now()))
+calc.get_today_stats()
