@@ -1,43 +1,36 @@
 from datetime import datetime
 
-def make_date(date):
-  if type(date) == str:
-    return datetime.strptime(date, '%d.%m.%y')
-  elif type(date) == datetime:
-    return date
 
 class Record:
-  def __init__(self, amount, comment, date):
-      self.amount = amount
-      self.comment = comment
-      self.date = make_date(date)
+    def __init__(self, amount, comment, date=datetime.now()):
+        self.amount = amount
+        self.comment = comment
+        self.date = date if isinstance(date, datetime) else datetime.strptime(date, '%d.%m.%Y')
 
 
 class Calculator:
-  def __init__(self, limit=0):
-    self.records = []
-    self.today = datetime.now()
-    self.limit = limit
-    USD_RATE = 75
-    EUR_RATE = 90
+    def __init__(self, limit=0):
+        self.records = []
+        self.today = datetime.now()
+        self.limit = limit
 
+    def add_record(self, record):
+        self.records.append(record)
 
-  def add_record(self, record):
-    self.records.append(record)
+    def get_today_stats(self):
+        count = 0
+        for record in self.records:
+            if record.date.day == self.today.day:
+                count += record.amount
+        return count
 
-  def get_today_stats(self):
-    count = 0
-    for record in self.records:
-      if record.date.day == self.today.day:
-        count += record.amount
-    return count
+    def get_week_stats(self):
+        count = 0
 
-  def get_week_stats(self):
-    count = 0
-    for record in self.records:
-      if self.today.week - 7 < record.date.week <= self.today.week:
-          count += record.amount
-    return count
+        for record in self.records:
+            if self.today.day * 7 - 7 < record.date.day * 7 <= self.today.day * 7:
+                count += record.amount
+        return count
 
 
 class CaloriesCalculator(Calculator):
@@ -50,21 +43,23 @@ class CaloriesCalculator(Calculator):
 
 
 class CashCalculator(Calculator):
+    def __init__(self, limit):
+        super().__init__(limit)
+        self.CUR = {'usd': 1/75, 'eur': 1/90, 'rub': 1}
 
-  def get_today_cash_remained(self,currency):
-    spent = self.get_today_stats()
-    if spent < self.limit:
-      return ("На сегодня осталось" + str((self.limit - spent)) + currency)
-    elif spent == self.limit:
-      return "Денег нет, держись"
-    elif spent > self.limit:
-      return ("Денег нет, держись: твой долг -" + str((spent - self.limit)) + currency)
+    def get_today_cash_remained(self, currency):
+        spent = self.get_today_stats()
+        if spent < self.limit:
+            return f"На сегодня осталось {(self.limit - spent)*self.CUR[currency]} {currency}"
+        elif spent == self.limit:
+            return "Денег нет, держись"
+        elif spent > self.limit:
+            return f"Денег нет, держись: твой долг - {(spent - self.limit)*self.CUR[currency]} {currency}"
 
 
+cash_calculator = CashCalculator(1000)
+cash_calculator.add_record(Record(amount=145, comment='кофе'))
+cash_calculator.add_record(Record(amount=300, comment='Серёге за обед'))
+cash_calculator.add_record(Record(amount=3000, comment='бар в Танин др', date='08.11.2019'))
 
-
-
-calc = Calculator()
-calc.add_record(Record(100, 'comm1', datetime.now()))
-calc.add_record(Record(200, 'comm2', datetime.now()))
-calc.get_today_stats()
+print(cash_calculator.get_today_cash_remained('rub'))
