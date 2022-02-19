@@ -39,13 +39,14 @@ class Calculator:
           count += record.amount
     return count
 
+
 class CaloriesCalculator(Calculator):
-  def get_calories_remained(self):
-    spent = self.get_today_stats()
-    if spent < self.limit:
-      return "Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более " + (self.limit - spent) + " кКал"
-    elif spent >= self.limit:
-      return "Хватит есть!"
+    def get_calories_remained(self):
+        spent = self.get_today_stats()
+        if spent < self.limit:
+            return f"Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {self.limit - spent} кКал"
+        elif spent >= self.limit:
+            return "Хватит есть!"
 
 
 class CashCalculator(Calculator):
@@ -53,11 +54,11 @@ class CashCalculator(Calculator):
   def get_today_cash_remained(self,currency):
     spent = self.get_today_stats()
     if spent < self.limit:
-      return ("На сегодня осталось" + (self.limit - spent) + currency)
+      return ("На сегодня осталось" + str((self.limit - spent)) + currency)
     elif spent == self.limit:
       return "Денег нет, держись"
     elif spent > self.limit:
-      return "Денег нет, держись: твой долг -" (spent - self.limit) + currency
+      return ("Денег нет, держись: твой долг -" + str((spent - self.limit)) + currency)
 
 
 
