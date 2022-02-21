@@ -59,11 +59,3 @@ class CashCalculator(Calculator):
             return "Денег нет, держись"
         elif spent > self.limit:
             return f"Денег нет, держись: твой долг - {(spent - self.limit)*self.CUR[currency]} {currency}"
-
-
-cash_calculator = CashCalculator(1000)
-cash_calculator.add_record(Record(amount=145, comment='кофе'))
-cash_calculator.add_record(Record(amount=300, comment='Серёге за обед'))
-cash_calculator.add_record(Record(amount=3000, comment='бар в Танин др', date='08.11.2019'))
-
-print(cash_calculator.get_today_cash_remained('rub'))
